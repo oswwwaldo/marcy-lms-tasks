@@ -1,0 +1,10 @@
+{
+  "name": "Marcy LMS Tasks",
+  "description": "Sync your Google Tasks workflow automatically with incoming assignments from Marcy LMS",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "hello.html",
+    "default_icon": "hello_extensions.png"
+  }
+}
