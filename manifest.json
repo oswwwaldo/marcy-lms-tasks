@@ -1,10 +1,47 @@
 {
   "name": "Marcy LMS Tasks",
   "description": "Sync your Google Tasks workflow automatically with incoming assignments from Marcy LMS",
-  "version": "1.0",
+  "version": "1.0.0",
+  "key": "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDn0GdxgZR1PbOvkbkSYR/eAx69lQT74FP2R1CxtPPzYhPkKbu321fjvMpas2mjKkOkxQ/wuBvnnqsXhBwrxxS+4YIgdp/tolwuRl+7Vs7aAMoijnJXwnG2Bwo+l1hDJ9MGi2ubq6520mFi9vOi/3r7zKvq1ozeT2jQ4HdzpH533NJx96F+/wFE/LnKz8sUmVLh+Flwk59kHKcoenIUrgZrPTMTrSAudxenSUbqFv8hlDrCbw233kaHztdzy/wJyJoFmYI3oOjyVhA0m+sK6Ecp4KgANmwXYQs7ROeLK+9njdcol/ialrcnBE27wxxDcsv+4Gu/5vZIWN1cUqK/AUjHAgMBAAECggEAFFKbdwJ+suaVZat3V6qnIg4Q+FrjpHdOtRUceG/eQTSUfNjBycUTh/YpoVkARlsysfPKyXZCkARDiJy+4YGjCnb3swPjUnB891uZEfHy0X7nOa9WS+ZSlLw6RDF9fem0YOsBJJUhBu67tfLjeiM+s2uGmOB1WhoJHOLI5h0CL1zEaZth9FRFlOKYCoEu3vG8qPScqIZvSDX7UygajiAHMymhmA6aenadOMGl0mG6e4r1lSFjqwFN8q7yeExPLDo8/f6RNyPXHCZZK5W3ulJlRQJ4J+cQf4ycc2jJ6gDKqy6OPOLTvdYjgWz0KykAxpDQQ+yGfhK3jMhcEbZc6cx6FQKBgQDzsgZztpwZ8JZocni8iWrlWTCucKG54+oey11Hkq8xZfq8NBhFt/EfcwGrOfvU8EM3l0xq5KLBmiCMbH0zh7oq2itsem+HKQ3aH8jIeX7XF4pp3fBZ6qxfMkyCRS+TpTVY//hdtS3UO7R76aFZwMbK6ywUpcaFmyTt/+85HGoX/QKBgQDzhM1lq2oafvc4GXA8ob6WDMoAitiTG+7qmtms9ZgGiWZX4Df+7fm4KOxxHN3WtCjWyT7k1yeawwAR5WNCH6g2K9943kYRQCk1NykdiAb2rm4piDtQo0+BmA2cxyVuleP1ZQ/FSNIi2uT9roYD2YI9axbbzz1w5j1Gtf6ka5zVEwKBgBznR4af6QHWnDBFK3bJIamUG4cFCtl+Y71FR4n+ptLIEqYR07MpLusY++CwHuNRn9dPFZw0A+3MdwHQuETNW1JL0AystN+mCeOOE4Vbi6S9QQhvb1tqzwj3cUWeKRds59fnfDC5FXdvoWd0/VMk3y8gF3lXdCVSkl28FkaCzT6NAoGBALrrqEGvNu2JobflBtrziHhi7rdF3IHnAhgArq9tgLkbxHwVdsXu4yzx9LPKZZnFhkeACA/d+t93aNlTy0HZTOPv/0Qm0X+yUS8w3RV28WlucM7ebDE0efXOwjwiPOBKm8UkQtu7TtlETltPGD1iOu9sAQrOY6oCgOyDDCgnFiYTAoGBAK7Fd1TISoareHNDq0mbCOhBy3UvVYVtBGsxKPkrGLoaFC/oeQVcI8VU3RKtSi50Wc6vCxmHrzNE1gNtFt4aQ2d53kMgZ38l/WUDWz8z1ofWqwnzBB0wmraj1qqc/UQSuf5hbXSG8WlXe/2jDJFKK35/TwF4W68Y1MwpyGHTaW7E",
   "manifest_version": 3,
+  "oauth2": {
+    "client_id": "869270636017-hndo6m3l3tfrgbdikr02u6kqodmab5cd.apps.googleusercontent.com",
+    
+    "scopes": [
+      "https://www.googleapis.com/auth/tasks"
+    ]
+  },
+  "icons": {
+    "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
+    "48": "images/icon-48.png", 
+    "128": "images/icon-128.png"
+  },
   "action": {
-    "default_popup": "hello.html",
-    "default_icon": "hello_extensions.png"
-  }
+    "default_popup": "marcy-lms-tasks.html",
+    "default_icon": "images/icon-16.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; frame-src https://mls-lms.vercel.app/;"
+  },
+  "background": {
+    "service_worker": "service-worker.js",
+    "type": "module"
+  },
+  "host_permissions": [
+    "*://mls-lms.vercel.app/*"
+  ],
+  "permissions": [
+    "alarms", 
+    "identity",
+    "notifications",
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://mls-lms.vercel.app/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
 }
