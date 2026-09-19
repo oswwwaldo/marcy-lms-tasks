@@ -158,10 +158,8 @@ async function fetchTaskLists(token) {
     );
 
     console.log(output);
-    // contentEl.innerText = output;
   } catch (err) {
     console.error('Failed to fetch task lists:', err);
-    // contentEl.innerText = err.message;
   }
 }
 
@@ -169,15 +167,29 @@ async function fetchTaskLists(token) {
 // --- Marcy LMS ---
 
 /**
- * Fetches assignments from the dashboarn
+ * Fetches JSON data from protected Marcy LMS API tRPC endpoints
+ * @params {string} programs | assignments | courses | attendance | me
  * @returns {response.json} assignments.listMine
  */
-async function fetchAssignments() {
-  console.log("Fetching assignments...");
-  const url = "https://mls-lms.vercel.app/api/trpc/assignments.listMine";
+async function fetchMarcyAPI(requestedEndpoint) {
+  console.log("Connecting to mls-lms.vercel.app/api/trpc...");
+
+  const availableEndpoints = Object.freeze({
+    'programs': 'https://mls-lms.vercel.app/api/trpc/programs.listMine',
+    'assignments': 'https://mls-lms.vercel.app/api/trpc/assignments.listMine',
+    'courses': 'https://mls-lms.vercel.app/api/trpc/courses.listMine',
+    'attendance': 'https://mls-lms.vercel.app/api/trpc/attendance.myWeek',
+    'me': 'https://mls-lms.vercel.app/api/trpc/me'
+  });
+
+  if (Object.keys(availableEndpoints).includes(requestedEndpoint)) {
+    console.log(`Fetching ${requestedEndpoint}...`);
+  } else {
+    throw new Error(`fetchMarcyAPI(requestedEndpoint) invalid parameter given — ${requestedEndpoint}`);
+  }
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch(availableEndpoints[requestedEndpoint], {
       method: "GET",
       credentials: "include"
     });
@@ -187,12 +199,15 @@ async function fetchAssignments() {
     }
 
     const data = await response.json();
-    console.log("Assignments payload received:", data);
+    console.log(`${requestedEndpoint.charAt(0).toUpperCase() + requestedEndpoint.slice(1)} payload received:`, data);
     return data;
-    
   } catch (error) {
-    console.error("Could not fetch assignments:", error);
+    console.log(`Could not fetch ${requestedEndpoint}:`, error);
   }
 }
 
-fetchAssignments();
+fetchMarcyAPI('me');
+fetchMarcyAPI('attendance');
+fetchMarcyAPI('courses');
+fetchMarcyAPI('programs');
+fetchMarcyAPI('assignments');
