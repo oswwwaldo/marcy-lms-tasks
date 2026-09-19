@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "my-oauth-worker",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-18",
+  "vars": {
+    "CLIENT_ID": "869270636017-hndo6m3l3tfrgbdikr02u6kqodmab5cd.apps.googleusercontent.com",
+    "REDIRECT_URI": "https://iojggedkihednaaendbflpkjhichdkno.chromiumapp.org/"
+  }
+}
