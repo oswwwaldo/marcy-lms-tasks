@@ -11,10 +11,22 @@ console.log('content.js');
         `
     )
 
-    nav.append(btnWidget);
+    if (nav && btnWidget){
+        nav.append(btnWidget);
+    }
 })();
 
 function createDomElement(html) {
     const dom = new DOMParser().parseFromString(html, 'text/html');
     return dom.body.firstElementChild;
 }
+
+//#region onMessage
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "getTheme") {
+        const savedTheme = localStorage.getItem("theme");
+        sendResponse({ theme: savedTheme });
+    }
+})
+//#endregion
+

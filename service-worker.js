@@ -2,7 +2,31 @@ console.log("service-worker.js");
 
 const CLIENT_ID = '869270636017-hndo6m3l3tfrgbdikr02u6kqodmab5cd.apps.googleusercontent.com';
 const WORKER_URL = 'https://my-oauth-worker.ofdelossantosa.workers.dev'; 
+const TASKS_API_BASE = 'https://tasks.googleapis.com/tasks/v1';
 
+(async () => {
+  try {
+    console.log("Loading (async()=>{})();")
+    const taskLists = fetchTaskLists(await getValidAccessToken());
+    console.log(taskLists);
+  } catch (error) {
+    console.error("Failed to load tasks in async func:", error);
+  }
+})();
+
+// ! example to delete later */
+// Saving data
+// chrome.storage.local.set({ username: "JaneDoe" }, () => {
+//   console.log("Data saved successfully.");
+// });
+
+// // Retrieving data
+// chrome.storage.local.get(["username"], (result) => {
+//   console.log("Username is currently: " + result.username);
+// });
+
+
+//#region onMessage
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('Service worker received message:', message);
 
@@ -18,6 +42,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       .catch((err) => sendResponse({ success: false, error: err.message }));
     return true;
   }
+  if (message.action === 'get_credentials') {
+    getMarcyUserData()
+      .then((credentials) => sendResponse(credentials))
+      .catch((err) => sendResponse({ success: false, error: err.message }));
+    return true;
+  }
+  if (message.action === 'loaded_dom') {
+  
+  }
   if (message.action === 'hi') {
     sendResponse({
       reply: 'hi lol — the elusive worker service worker',
@@ -26,8 +59,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 });
+//#endregion
 
-
+//#region Authentication 
 async function handleAuthFlow() {
   const redirectUri = chrome.identity.getRedirectURL();
   const scopes = 'https://www.googleapis.com/auth/tasks';
@@ -90,6 +124,7 @@ async function getValidAccessToken() {
   const data = await chrome.storage.local.get(['access_token', 'refresh_token', 'expires_at']);
 
   if (data.access_token && data.expires_at > Date.now() + 60000 ) {
+    console.log("Access token hasn't expired, returning token in storage...");
     return data.access_token;
   }
 
@@ -106,25 +141,27 @@ async function getValidAccessToken() {
       }),
     });
 
-    const newData = await response.json();
+    const newAccessToken = await response.json();
 
-    if (newData.error) {
+    if (newAccessToken.error) {
       await chrome.storage.local.remove(['access_token', 'refresh_token', 'expires_at']);
       throw new Error('Unknown session error. Please sign in again.');
     }
 
     await chrome.storage.local.set({
-      access_token: newData.access_token,
-      expires_at: Date.now() + newData.expires_in * 1000,
+      access_token: newAccessToken.access_token,
+      expires_at: Date.now() + newAccessToken.expires_in * 1000,
     });
 
-    return newData.access_token;
+    return newAccessToken.access_token;
   }
 
+  console.error("No access or refresh token available");
   throw new Error('No valid sesion found. Please sign in.');
 }
+//#endregion
 
-
+//#region Google Tasks API
 // --- Google Tasks API ---
 
 /**
@@ -148,7 +185,7 @@ async function fetchTaskLists(token) {
     const taskLists = data.items;
 
     if (!taskLists || taskLists.length === 0) {
-      contentEl.innerText = 'No task lists found.';
+      console.error("No task lists found.");
       return;
     }
 
@@ -164,12 +201,84 @@ async function fetchTaskLists(token) {
 }
 
 
+//#endregion
+
+//#region Marcy LMS 
 // --- Marcy LMS ---
 
 /**
+ * Fetches the current user's profile data from Marcy LMS to verify authentication.
+ *
+ * @async
+ * @function getMarcyUserData
+ * @returns {Promise<{success: boolean, data?: object, success: boolean, error?: unknown}>} 
+ * Object containing execution status and user payload or error details.
+ */ 
+async function getMarcyUserData() {
+  try {
+    const payload = await fetchMarcyAPI('me');
+
+    if (payload.result.data.json != null) {
+      console.log("Verified data exists");
+      return { success: true, data: payload };
+    }
+
+    return { success: false, error: new Error("Malformed payload structure") };
+  } catch (error) {
+    const isAuthError = error.status === 401 || error.status === 403;
+
+    if (isAuthError) {
+      console.error("getMarcyUserData() permissions denied:", error);
+    } else {
+      console.error("getMarcyUserData() network/server error:", error);
+    }
+    return { success: false, error };
+  }
+}
+
+// const endpointParsers = {
+//   me: (data) => ({
+//     id: data?.id,
+//     name: data?.displayName,
+//     email: data?.email,
+//     role: data?.role,
+//   }),
+  
+//   assignments: (data) => data?.map(item => ({
+//     id: item?.id,
+//     title: item?.title,
+//     dueDate: item?.dueDate,
+//   })) ?? [],
+// }
+
+// function parsePayloadByEndpoint(endpoint, payload) {
+//   const parser = endpointParsers[endpoint];
+  
+//   if (!parser) {
+//     throw new Error(`No parser configured for endpoint: ${endpoint}`);
+//   }
+
+//   const rawData = payload?.result?.data?.json ?? payload;
+  
+//   return parser(rawData);
+// }
+
+// async function readJSONPayload(payload) {
+//   let json = JSON.parse(payload);
+//   // Targeting deeply nested properties
+//   const user = json.result.data.json;
+
+//   console.log(user.email);          // "ofdelossantosa@gmail.com"
+//   console.log(user.displayName);    // "Oswaldo Fabrizio De Los Santos Ascencio"
+//   console.log(user.role);           // "STUDENT"
+// }
+
+/**
  * Fetches JSON data from protected Marcy LMS API tRPC endpoints
- * @params {string} programs | assignments | courses | attendance | me
- * @returns {response.json} assignments.listMine
+ * @async
+ * @function fetchMarcyAPI
+ * @param {string} requestedEndpoint (programs | assignments | courses | attendance | me)
+ * @returns {response.json} 
  */
 async function fetchMarcyAPI(requestedEndpoint) {
   console.log("Connecting to mls-lms.vercel.app/api/trpc...");
@@ -196,6 +305,7 @@ async function fetchMarcyAPI(requestedEndpoint) {
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
+
     }
 
     const data = await response.json();
@@ -203,11 +313,8 @@ async function fetchMarcyAPI(requestedEndpoint) {
     return data;
   } catch (error) {
     console.log(`Could not fetch ${requestedEndpoint}:`, error);
+    throw error; 
   }
 }
 
-fetchMarcyAPI('me');
-fetchMarcyAPI('attendance');
-fetchMarcyAPI('courses');
-fetchMarcyAPI('programs');
-fetchMarcyAPI('assignments');
+//#endregion
