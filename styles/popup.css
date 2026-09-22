@@ -1,6 +1,6 @@
 html, body {
     width: 500px;  
-    height: 400px; 
+    height: 500px; 
     margin: 0;
     padding: 0;
     overflow: hidden; 
@@ -13,6 +13,43 @@ iframe {
     display: block;
 }
 
-.icon {
-    
+#section-cta-oauth,
+#get-started_button,
+#signout_button,
+#spinner {
+  display: none;
 }
+
+/* Writing this code has made me realize just how beautiful Astro.js is */
+#signed-in-menu,
+#signed-out-menu,
+#settings-menu {
+  display: none;
+  height: 100%;
+}
+
+[data-state="GETTING_STARTED"] #signed-in-menu,
+[data-state="DASHBOARD"] #signed-in-menu {
+  display: flex;
+}
+
+[data-state="SETTINGS"] #settings-menu {
+  display: flex;
+}
+
+[data-state="SIGNED_OUT"] #signed-out-menu,
+[data-state="SIGNED_IN_GOOGLE_ONLY"] #signed-out-menu,
+[data-state="SIGNED_IN_MARCY_ONLY"] #signed-out-menu,
+[data-state="SIGNED_IN_ALL"] #signed-out-menu,
+[data-state="LOADING"] #signed-out-menu {
+  display: flex;
+}
+
+[data-state="LOADING"] .spinner { display: block; }
+:not([data-state="LOADING"]) .spinner { display: none; }
+
+[data-state="SIGNED_IN_MARCY_ONLY"] #section-cta-oauth { display: flex; }
+[data-state="SIGNED_IN_MARCY_ONLY"] #section-cta-link { display: none; }
+
+[data-state="SIGNED_IN_GOOGLE_ONLY"] #section-cta-oauth { display: none; }
+[data-state="SIGNED_IN_GOOGLE_ONLY"] #section-cta-link { display: flex; }
