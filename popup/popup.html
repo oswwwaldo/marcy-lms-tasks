@@ -3,17 +3,39 @@
 <head>
   <title> Marcy LMS Tasks </title>
   <meta charset="utf-8" />
-  <link rel="stylesheet" href="styles/popup.css" />
-  <link rel="stylesheet" href="styles/external/mls_base.css" />
-  <link rel="stylesheet" href="styles/external/mls_main.css" />
+  <link rel="stylesheet" href="../styles/popup.css" />
+  <link rel="stylesheet" href="../styles/external/mls_base.css" />
+  <link rel="stylesheet" href="../styles/external/mls_main.css" />
 </head>
-<body>
+<body data-state="SIGNED_OUT">
+  <header>
+    <h1 id="title-button"> Marcy LMS Tasks </h1>
+  </header>
+
+  <main id="app-router"></main>
+
+  <!-- View Templates -->
+  <template id="view-home">
+    <div class="view-content">
+      <h2>Dashboard</h2>
+      <button id="go-settings">Go to Settings</button>
+    </div>
+  </template>
+
+  <template id="view-settings">
+    <div class="view-content">
+      <h2>Settings</h2>
+      <button id="go-home">Back to Home</button>
+    </div>
+  </template>
+
+
+
   <header
     class="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b border-border bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 bg-black-500">
-    <button type="button"
-      class="group/button inline-flex shrink-0 items-center justify-center border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*='size-'])]:size-4 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg -ml-1 min-w-0 flex-1 flex flex-row hidden"
+    <button id="title-button" type="button"
+      class="group/button inline-flex shrink-0 items-center justify-center border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*='size-'])]:size-4 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg -ml-1 min-w-0 flex-1 flex flex-row hidden"
       style="justify-content: flex-start; gap: 16px;">
-
       <div class="icon flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
         <svg width="36.127659mm" height="27.909mm" viewBox="0 0 36.127659 27.909001" version="1.1" id="svg1"
           xml:space="preserve" sodipodi:docname="mls-lms-check.svg" inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
@@ -34,12 +56,11 @@
           </g>
         </svg>
       </div>
-
       <h1 class="class=" ml-6 font-normal text-foreground truncate">
         Marcy LMS Tasks
       </h1>
     </button>
-    <button type="button"
+    <button id="sync-button" type="button" title="Sync"
       class="group/button inline-flex shrink-0 items-center justify-center border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*='size-'])]:size-4 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg -ml-1 min-w-0 flex flex-row sync"
       style="justify-content: space-evenly;">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -54,7 +75,15 @@
         Sync with Google Tasks
       </span>
     </button>
-    <button type="button"
+    <button id="info-button" type="button"
+      class="group/button inline-flex shrink-0 items-center justify-center border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*='size-'])]:size-4 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg -ml-1 min-w-0 flex flex-row sync"
+      style="justify-content: space-evenly;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info preview-icon"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      <span class="hidden ml-6 font-normal text-foreground truncate">
+        About 
+      </span>
+    </button> 
+    <button id="settings-button" type="button" title="Settings"
       class="group/button inline-flex shrink-0 items-center justify-center border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*='size-'])]:size-4 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg -ml-1 min-w-0 flex flex-row  settings"
       style="justify-content: space-evenly;">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -70,32 +99,33 @@
     </button>
   </header>
 
-  <section class="hidden settings">
+  <section id="settings-menu" class="settings mls-signed-out flex flex-col items-center justify-center gap-3 rounded-lg px-6 py-14 text-center">
     <span> Theme controls: toggle between light, dark or system sync modes for extension UI </span>
-    <span> Data Export / Import </span>
     <span> Enable email notifications </span>
     <span> Enable desktop notifications </span>
     <span> Enable feedback notifications </span>
     <span> Change default task list </span>
-    <span> Disable automatic updates </span>
+    <span> Override body height value (px) </span>
     <span> Auto-refresh interval </span>
-    <span> Pomdoro / focus timer </span>
     <span> Desktop push notifications </span>
     <span> Daily digest summary (LangChain) </span>
     <span> Enable/disable iFrame </span>
     <span> Minimize navbar </span>
+    <span> Change default iFrame page </span>
     <span> Sign out of Google </span>
+
     <footer>
-      <span> Developed by oswwwaldo </span>
+      <span> Marcy LMS Tasks </span>
+      <span> This extension is not affiliated or endorsed by the Marcy Lab School </span>
+      <span> Developed by Oswaldo Fabrizio De Los Santos Ascencio </span>
       <span> Privacy policy </span>
       <span> Contact </span>
-      <span> Contribute to the development of this extension </span>
+      <span> Contribute </span>
       <span> v1.0.0 </span>
-      <span> Help & feedback </span>
     </footer>
   </section>
 
-  <section id="signed-out"
+  <section id="signed-out-menu"
     class="mls-signed-out flex flex-col items-center justify-center gap-3 rounded-lg px-6 py-14 text-center">
     <div id="section-icon"
       class="flex size-11 items-center justify-center rounded-full bg-muted text-muted-foreground [&_svg]:size-5">
@@ -120,6 +150,8 @@
         <path
           d="M12.225 5.253c2.108 0 3.529.892 4.34 1.638l3.167-3.031C17.787 2.088 15.255 1 12.225 1 7.834 1 4.043 3.469 2.197 7.062l3.63 2.763a6.77 6.77 0 016.398-4.572z" />
       </svg>
+
+      <svg id="signed-in-all-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-gantt preview-icon"><path d="M10 6h8"/><path d="M12 16h6"/><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 11h7"/></svg>
     </div>
     <div class="flex flex-col gap-1">
       <p id="section-header" class="text-sm font-medium text-foreground">
@@ -141,23 +173,27 @@
         </svg>
         Visit Marcy LMS
       </a>
-      <button id="section-cta-oauth" style="display: none;" type="button"
+      <button id="section-cta-oauth" type="button"
         class="group/button inline-flex shrink-0 items-center justify-center border bg-clip-padding font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5">
         Sign in with Google
       </button>
-      <button id="signout_button" style="display: none;" type="button"
+
+      <button id="get-started_button"type="button"
+        class="group/button inline-flex shrink-0 items-center justify-center border bg-clip-padding font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5">
+        Get started
+      </button>
+
+      <button id="signout_button" type="button"
         class="group/button inline-flex shrink-0 items-center justify-center border bg-clip-padding font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5">
         Sign Out
       </button>
     </div>
-
-    <div id="spinner" class="spinner hidden">
-      
-    </div>
   </section>
 
-  <section id="signed-in" class="hidden">
-    <!-- <pre id="content" style="white-space: pre-wrap;"></pre> -->
+  <div id="spinner" class="spinner">
+    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+  </div>
+  <section id="signed-in-menu">
     <iframe src="https://mls-lms.vercel.app/"></iframe>
   </section>
   <script src="popup.js"></script>
