@@ -8,6 +8,8 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+// With an authorization code from Google
+// Request a refresh_token for long-term logged in state
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") {

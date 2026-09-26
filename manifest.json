@@ -17,8 +17,8 @@
     "128": "assets/images/icon-128.png"
   },
   "action": {
-    "default_popup": "popup.html",
-    "default_icon": "assets/images/icon-16.png"
+    "default_popup": "popup/popup.html",
+    "default_icon": "assets/images/icon-128.png"
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; frame-src https://mls-lms.vercel.app/;"

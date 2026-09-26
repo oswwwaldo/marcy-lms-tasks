@@ -1,5 +1,7 @@
 console.log("popup.js");
 
+import { Router } from './router.js';
+
 const CLIENT_ID = "869270636017-hndo6m3l3tfrgbdikr02u6kqodmab5cd.apps.googleusercontent.com";
 const WORKER_URL = "https://my-oauth-worker.ofdelossantosa.workers.dev";
 const TASKS_API_BASE = "https://tasks.googleapis.com/tasks/v1";
@@ -426,6 +428,12 @@ async function handleSignoutClick() {
  * Update the DOM, check auth and enable interactivity
  */
 document.addEventListener("DOMContentLoaded", async () => {
+  const router = new Router(document.getElementById('app-router'));
+
+  
+
+
+
   console.log("DOMContentLoaded event fired...");
 
   updateDOMState();
@@ -450,6 +458,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   handleThemeState();
 });
 
+/**
+ * Updates automatically to the user's choice of theme on mls-lms.vercel.app/
+ * @async 
+ * @returns<void>
+ */
 async function handleThemeState() {
   const [tab] = await chrome.tabs.query({
     active: true,
